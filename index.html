@@ -3,14 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Maintenance — Test Page</title>
+    <title>NayeemSoft — Maintenance Notice</title>
     <style>
       :root {
-        --bg: #0f1724;
-        --accent: #60a5fa;
-        --muted: #94a3b8;
-        --glass: rgba(255, 255, 255, 0.04);
+        --bg: #0a0f1e;
+        --accent: #3b82f6;
+        --accent-light: #60a5fa;
+        --warning: #facc15;
+        --muted: #9ca3af;
+        --glass: rgba(255, 255, 255, 0.05);
       }
+
       * {
         box-sizing: border-box;
       }
@@ -20,110 +23,166 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(180deg, #071021 0%, #0b1b2b 100%);
-        font-family: Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
-          Arial;
-        color: #e6eef8;
+        background: radial-gradient(circle at top, #0b1b33 0%, #050912 100%);
+        font-family: "Poppins", Inter, system-ui, sans-serif;
+        color: #e5e7eb;
         padding: 24px;
       }
+
       .card {
-        max-width: 760px;
+        max-width: 780px;
         width: 100%;
         background: var(--glass);
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        padding: 32px;
-        border-radius: 12px;
-        backdrop-filter: blur(6px);
-        box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 40px 32px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
       }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--warning);
+        color: #111;
+        font-weight: 800;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+      }
+
       h1 {
-        margin: 0 0 8px 0;
-        font-size: 1.6rem;
+        margin: 8px 0 12px 0;
+        font-size: 1.8rem;
+        color: var(--accent-light);
+        letter-spacing: -0.5px;
       }
+
       p.lead {
         color: var(--muted);
-        margin: 0 0 18px 0;
+        margin: 0 0 22px 0;
+        font-size: 1rem;
       }
+
       .step {
-        background: var(--glass);
-        padding: 12px 14px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 14px;
         border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
         margin-bottom: 10px;
+        text-align: left;
       }
+
+      .step strong {
+        color: var(--accent-light);
+      }
+
       .actions {
+        margin-top: 20px;
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
-        align-items: center;
+        gap: 10px;
+        justify-content: center;
       }
+
       .btn {
-        padding: 8px 10px;
-        border-radius: 6px;
-        cursor: pointer;
+        padding: 10px 16px;
+        border-radius: 8px;
         font-weight: 600;
-        font-size: 0.85rem;
-        border: 1px solid rgba(96, 165, 250, 0.18);
-        background: transparent;
-        color: var(--accent);
-      }
-      .btn.primary {
-        background: linear-gradient(90deg, var(--accent), #3b82f6);
-        color: white;
         border: none;
+        cursor: pointer;
+        transition: 0.3s;
       }
+
+      .btn.primary {
+        background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        color: white;
+      }
+
+      .btn.warning {
+        background: var(--warning);
+        color: #111;
+      }
+
       .btn.small {
         font-size: 0.8rem;
-        padding: 6px 8px;
-        background: #3b82f6;
-        color: #fff;
-        border: none;
+        padding: 6px 10px;
+        background: var(--accent-light);
+        color: white;
       }
+
+      .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
       footer {
-        margin-top: 20px;
-        border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        margin-top: 30px;
+        border-top: 1px dashed rgba(255, 255, 255, 0.08);
         padding-top: 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-      }
-      .muted {
-        color: var(--muted);
         font-size: 0.9rem;
+        color: var(--muted);
       }
+
       a.email {
-        color: #bfe1ff;
+        color: var(--accent-light);
         text-decoration: none;
+        font-weight: 500;
       }
+
+      .thanks {
+        margin-top: 18px;
+        color: var(--accent-light);
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
       @media (max-width: 520px) {
         .card {
-          padding: 20px;
+          padding: 24px;
         }
         h1 {
-          font-size: 1.25rem;
+          font-size: 1.4rem;
         }
       }
     </style>
   </head>
   <body>
     <main class="card">
-      <h1>We are sorry — this page is under maintenance</h1>
+      <div class="logo">
+        <div class="logo-icon">⚠</div>
+        <h2>NayeemSoft</h2>
+      </div>
+
+      <h1>We’re Sorry — This Page Is Under Maintenance</h1>
       <p class="lead">
-        We are currently working on updates. Once the work is complete, you will
-        be able to use this page normally.
+        Our engineers are currently improving this page for a better experience.
+        We appreciate your patience and understanding.
       </p>
 
       <div class="step">
-        <strong>Under manage</strong> — our team is fixing and testing this
-        page.
+        <strong>1.</strong> The system is currently under active maintenance and
+        testing.
       </div>
       <div class="step">
-        <strong>If complete</strong> — you can start using it again without
-        extra steps.
+        <strong>2.</strong> Once updates are complete, you’ll be able to access
+        all features again.
       </div>
       <div class="step">
-        <strong>If you need help</strong> — contact support or email us directly
-        below.
+        <strong>3.</strong> For urgent access or immediate assistance, please
+        use the emergency contact below.
       </div>
 
       <div class="actions">
@@ -132,19 +191,30 @@
         </button>
         <button
           class="btn small"
-          onclick="window.location.href='./test.html'"  
-        > 
+          onclick="window.location.href='mailto:kazinayeem55085@gmail.com'"
+        >
           Emergency
         </button>
-        <span class="muted">Email:</span>
-        <a class="email" href="mailto:kazinayeem55085@gmail.com"
-          >kazinayeem55085@gmail.com</a
+        <button
+          class="btn warning"
+          onclick="window.open('./test.html', '_blank')"
         >
+          Visit Test Page
+        </button>
+      </div>
+
+      <div class="thanks">
+        Thanks for staying with us — <strong>NayeemSoft</strong>
       </div>
 
       <footer>
-        <div class="muted">Last updated: <strong>Today</strong></div>
-        <div class="muted">Made with care • nayeemsoftbd</div>
+        <div>
+          Need help? Email us at
+          <a class="email" href="mailto:kazinayeem55085@gmail.com"
+            >kazinayeem55085@gmail.com</a
+          >
+        </div>
+        <div>© 2025 NayeemSoft. All rights reserved.</div>
       </footer>
     </main>
 
@@ -157,10 +227,11 @@
         alert(
           "Thanks, " +
             (name || "friend") +
-            "! We will notify you when the page is ready."
+            "! We will notify you once maintenance is done."
         );
       }
     </script>
+
     <script>
       window.va =
         window.va ||
