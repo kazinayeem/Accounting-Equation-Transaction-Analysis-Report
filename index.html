@@ -1,1237 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Streamlined Accounting Equation Analysis</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- External Libraries for Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <!-- PDF Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Inter", "sans-serif"],
-            },
-            colors: {
-              primary: "#4f46e5",
-              secondary: "#1f2937",
-              "bg-dark": "#0f172a",
-              "text-light": "#f8fafc",
-              success: "#10b981",
-              error: "#ef4444",
-            },
-          },
-        },
-      };
-    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Maintenance — Test Page</title>
     <style>
+      :root {
+        --bg: #0f1724;
+        --accent: #60a5fa;
+        --muted: #94a3b8;
+        --glass: rgba(255, 255, 255, 0.04);
+      }
+      * {
+        box-sizing: border-box;
+      }
       body {
-        font-family: "Inter", sans-serif;
-        background-color: #0f172a; /* bg-dark */
-        color: #f8fafc; /* text-light */
+        margin: 0;
         min-height: 100vh;
-      }
-      .input-cell {
-        width: 100%;
-        padding: 4px; /* Reduced padding for smaller size */
-        font-size: 0.875rem; /* Reduced font size */
-        text-align: right;
-        border: 1px solid #374151; /* gray-700 */
-        background-color: #1f2937; /* secondary */
-        color: #f8fafc;
-        border-radius: 4px;
-        outline: none;
-        transition: border-color 0.2s;
-      }
-      .input-cell:focus {
-        border-color: #4f46e5; /* primary */
-      }
-      .total-cell {
-        font-weight: bold;
-        text-align: right;
-        background-color: #334155; /* slate-700 */
-        color: #d1d5db; /* gray-300 */
-        font-size: 0.875rem;
-      }
-      #equationBalanceTotal {
-        /* Custom styling for the streamlined total display */
-        background-color: #2c384a !important; /* Slightly lighter slate for contrast */
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
-        padding: 8px 12px;
-        height: 100%;
-        min-width: 160px; /* Increased min-width for better display */
+        justify-content: center;
+        background: linear-gradient(180deg, #071021 0%, #0b1b2b 100%);
+        font-family: Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
+          Arial;
+        color: #e6eef8;
+        padding: 24px;
       }
-      .total-cell.bg-success,
-      .total-cell.bg-error {
-        color: white; /* Ensure white text on colored background */
-      }
-
-      .table-container {
-        overflow-x: auto;
-        max-width: 100%;
-      }
-      table {
-        min-width: 1200px; /* Increased minimum width for better spacing */
-        border-collapse: separate;
-        border-spacing: 0;
-        width: 100%; /* Ensure it tries to take full width */
-      }
-      th,
-      td {
-        padding: 6px 4px; /* Reduced padding */
-        border-right: 1px solid #374151;
-        border-bottom: 1px solid #374151;
-        white-space: nowrap;
-      }
-      th {
-        background-color: #1e293b; /* slate-800 */
-        text-transform: uppercase;
-        font-size: 0.75rem; /* Slightly larger font for headers */
-        letter-spacing: 0.05em;
-        position: sticky;
-        top: 0;
-      }
-      .header-row th {
-        border-top: 1px solid #374151;
-      }
-      .loader {
-        border: 4px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        border-top: 4px solid #fff;
-        width: 20px;
-        height: 20px;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-      .description-cell {
-        white-space: normal;
-        word-wrap: break-word;
-        min-width: 280px; /* Increased min-width for better description visibility */
-        max-width: 350px;
-        text-align: left;
-        font-size: 0.8rem; /* Smaller font */
-      }
-
-      /* Placeholder simulation for contenteditable */
-      .description-content {
-        min-height: 2rem;
-        padding: 4px;
-        border-radius: 4px;
-        transition: background-color 0.1s;
-        outline: none;
-        cursor: text;
-      }
-      .description-content:empty:before {
-        content: attr(data-placeholder);
-        color: #6b7280;
-        opacity: 0.7;
-        pointer-events: none;
-        display: block;
-        font-style: italic;
-      }
-
-      .sno-cell {
-        width: 40px;
-        text-align: center;
-      }
-      .control-panel-item {
-        /* Better spacing for buttons on small screens */
+      .card {
+        max-width: 760px;
         width: 100%;
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 32px;
+        border-radius: 12px;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
       }
-      @media (min-width: 640px) {
-        .control-panel-item {
-          width: auto;
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 1.6rem;
+      }
+      p.lead {
+        color: var(--muted);
+        margin: 0 0 18px 0;
+      }
+      .step {
+        background: var(--glass);
+        padding: 12px 14px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        border: 1px solid rgba(96, 165, 250, 0.18);
+        background: transparent;
+        color: var(--accent);
+      }
+      .btn.primary {
+        background: linear-gradient(90deg, var(--accent), #3b82f6);
+        color: white;
+        border: none;
+      }
+      footer {
+        margin-top: 20px;
+        border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        padding-top: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      a.email {
+        color: #bfe1ff;
+        text-decoration: none;
+      }
+      @media (max-width: 520px) {
+        .card {
+          padding: 20px;
+        }
+        h1 {
+          font-size: 1.25rem;
         }
       }
     </style>
   </head>
-  <body class="p-4 sm:p-8">
-    <div class="w-full mx-auto min-w-full max-w-full">
-      <!-- Header -->
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-primary mb-1">
-        Accounting Equation Solver
-      </h1>
-      <p class="text-md text-gray-400 mb-6">
-        A = L + OE (Capital, Revenue, Expenses, Withdrawals)
+  <body>
+    <main class="card">
+      <h1>We are sorry — this page is under maintenance</h1>
+      <p class="lead">
+        We are currently working on updates. Once the work is complete, you will
+        be able to use this page normally.
       </p>
 
-      <!-- AI Transaction Input Panel -->
-      <div
-        class="p-5 bg-gray-800 rounded-2xl shadow-xl mb-6 border border-gray-700"
-      >
-        <h2 class="text-xl font-bold mb-3 text-white">
-          AI Transaction Entry & Analysis
-        </h2>
-        <p class="text-sm text-gray-400 mb-3">
-          Paste your list of transactions below. The AI will classify changes
-          into the 9 accounts automatically.
-        </p>
-        <textarea
-          id="aiPrompt"
-          rows="8"
-          class="w-full p-3 bg-secondary border-2 border-gray-600 rounded-lg text-white placeholder-gray-500 focus:ring-primary focus:border-primary resize-none transition duration-150 shadow-inner"
-          placeholder="1. Invested $15,000 cash to start the agency.
-2. Paid $600 cash for April office rent (Expense).
-3. Purchased equipment for $3,000 cash.
-4. Incurred $700 of advertising costs (Expense) on account.
-5. Paid $900 cash for office supplies.
-6. Performed services worth $10,000: $3,000 cash is received from customers, and the balance of $7,000 is billed to customers on account (Revenue).
-7. Withdrew $600 cash for personal use (Withdrawals).
-8. Paid Chicago Tribune $500 of the amount due in transaction (4).
-9. Paid employees' salaries $2,500 (Expense).
-10. Received $4,000 in cash from customers who have previously been billed in transaction (6)."
-        >
-        </textarea>
-        <div class="flex items-center justify-between mt-4 flex-wrap gap-4">
-          <button
-            id="processAIBtn"
-            class="bg-primary hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-xl transition duration-200 shadow-lg shadow-indigo-500/50 flex items-center gap-2 control-panel-item"
-          >
-            <span id="btnText">Fill Entries with AI</span>
-            <div id="loadingIndicator" class="loader hidden"></div>
-          </button>
-          <div id="messageBox" class="text-sm font-medium"></div>
-        </div>
+      <div class="step">
+        <strong>Under manage</strong> — our team is fixing and testing this
+        page.
+      </div>
+      <div class="step">
+        <strong>If complete</strong> — you can start using it again without
+        extra steps.
+      </div>
+      <div class="step">
+        <strong>If you need help</strong> — contact support or email us directly
+        below.
       </div>
 
-      <!-- Control Panel (Updated styling) -->
-      <div
-        class="flex flex-wrap gap-4 mb-6 p-4 bg-gray-800 rounded-2xl shadow-xl border border-gray-700"
-      >
-        <button
-          id="addRowBtn"
-          class="bg-success hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded-xl transition duration-200 shadow-md control-panel-item"
-        >
-          + Add New Transaction
+      <div class="actions">
+        <button class="btn primary" onclick="notify()">
+          Notify Me When Ready
         </button>
         <button
-          id="deleteAllRowsBtn"
-          class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-xl transition duration-200 shadow-md control-panel-item"
+          class="btn"
+          onclick="window.location.href='mailto:kazinayeem55085@gmail.com'"
         >
-          Clear All
+          Need Emergency Help
         </button>
-        <button
-          id="exportExcelBtn"
-          class="bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-6 rounded-xl transition duration-200 shadow-md control-panel-item"
+        <span class="muted">Email:</span>
+        <a class="email" href="mailto:kazinayeem55085@gmail.com"
+          >kazinayeem55085@gmail.com</a
         >
-          Export as Excel
-        </button>
-        <button
-          id="exportPDFBtn"
-          class="bg-red-700 hover:bg-red-800 text-white font-semibold py-2 px-6 rounded-xl transition duration-200 shadow-md control-panel-item"
-        >
-          Export as PDF Report
-        </button>
       </div>
 
-      <!-- Table Container -->
-      <div
-        class="table-container bg-secondary rounded-2xl shadow-2xl border border-gray-700"
-      >
-        <table id="analysisTable" class="w-full">
-          <!-- Table will be generated by JS -->
-        </table>
-      </div>
-
-      <!-- Footer -->
-      <footer class="mt-8 pt-6 border-t border-gray-700 text-center">
-        <p class="text-gray-400 text-sm">Developed by Mohammad Ali Nayeem |</p>
-        <p class="text-xs text-gray-600 mt-1">
-          Website:
-          <a
-            href="https://kazinayeem.site"
-            target="_blank"
-            class="text-blue-400 hover:text-blue-300"
-            >kazinayeem.site</a
-          >
-        </p>
+      <footer>
+        <div class="muted">Last updated: <strong>Today</strong></div>
+        <div class="muted">Made with care • Veterinary business</div>
       </footer>
-    </div>
+    </main>
 
     <script>
-      const table = document.getElementById("analysisTable");
-      const addRowBtn = document.getElementById("addRowBtn");
-      const deleteAllRowsBtn = document.getElementById("deleteAllRowsBtn");
-      const exportExcelBtn = document.getElementById("exportExcelBtn");
-      const exportPDFBtn = document.getElementById("exportPDFBtn");
-      const aiPrompt = document.getElementById("aiPrompt");
-      const loadingIndicator = document.getElementById("loadingIndicator");
-      const btnText = document.getElementById("btnText");
-      const messageBox = document.getElementById("messageBox");
-
-      const STRINGS = {
-        sno: "S.NO",
-        description: "Transaction Description",
-        final_balance: "FINAL BALANCE",
-        assets: "Assets",
-        liabilities: "Liabilities",
-        equity: "Owner's Equity",
-        confirm_delete_row: "Are you sure you want to delete this transaction?",
-        confirm_delete_all:
-          "Are you sure you want to clear all transactions in the table?",
-        error_group:
-          "Invalid group name. Use one of 'Assets', 'Liabilities', or 'Owner's Equity'.",
-        success_ai: "All transactions successfully added. Check the table.",
-        error_ai_data: "Error: Could not process data.",
-        error_ai_json:
-          "Model output is not in JSON format or format is incorrect.",
-        error_ai_api: "Network or API Error:",
-        error_ai_generic: "General Error:",
-        success_excel: "Data successfully exported as Excel (.xlsx).",
-        success_pdf: "Data successfully exported as PDF Report.",
-        placeholder_desc: "Enter transaction description...",
-      };
-
-      function getString(key) {
-        return STRINGS[key] || key;
-      }
-
-      // UPDATED: Added 'Withdrawals' (col8) back. Total 9 accounts.
-      let columns = [
-        { id: "col0", name: "Cash", group: "Assets" },
-        { id: "col1", name: "A/c Receivable", group: "Assets" },
-        { id: "col2", name: "Supplies", group: "Assets" },
-        { id: "col3", name: "Equipment", group: "Assets" },
-        { id: "col4", name: "A/c Payable", group: "Liabilities" },
-
-        // Equity Breakdown
-        { id: "col5", name: "Owner's Capital", group: "Owner's Equity" },
-        { id: "col6", name: "Revenue", group: "Owner's Equity'" },
-        { id: "col7", name: "Expenses", group: "Owner's Equity" },
-        { id: "col8", name: "Withdrawals", group: "Owner's Equity" },
-      ];
-
-      let colCounter = 8;
-      let rowCounter = 0;
-
-      // --- Helper Functions ---
-
-      function showMessage(msg, type) {
-        messageBox.textContent = msg;
-        messageBox.className = `text-sm font-medium ${
-          type === "error" ? "text-error" : "text-success"
-        }`;
-        setTimeout(() => {
-          messageBox.textContent = "";
-          messageBox.className = "text-sm font-medium";
-        }, 5000);
-      }
-
-      const debounce = (func, delay) => {
-        let timeoutId;
-        return (...args) => {
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => {
-            func.apply(this, args);
-          }, delay);
-        };
-      };
-
-      const parseValue = (value) => {
-        if (typeof value === "number") return value;
-        if (typeof value !== "string") return 0;
-        // Remove commas, then parse
-        const cleanedValue = value.replace(/,/g, "").trim();
-        // Handle explicit sign at the beginning for proper parsing
-        const sign = cleanedValue.startsWith("-")
-          ? -1
-          : cleanedValue.startsWith("+")
-          ? 1
-          : 1;
-        const numericPart = cleanedValue.replace(/[+-]/g, "");
-        const num = parseFloat(numericPart);
-        return isNaN(num) ? 0 : num * sign;
-      };
-
-      function calculateColumnTotal(colId) {
-        let total = 0;
-        table
-          .querySelectorAll(`input[data-col-id="${colId}"]`)
-          .forEach((input) => {
-            total += parseValue(input.value);
-          });
-        return total;
-      }
-
-      // --- Core Logic (Updated to remove Balanced? column) ---
-
-      function renderTableSkeleton() {
-        table.innerHTML = "";
-
-        // 1. Create Group Header (Assets = Liabilities + Owner's Equity)
-        const groupHeader = table.createTHead();
-        groupHeader.classList.add("bg-bg-dark");
-        const groupRow = groupHeader.insertRow();
-
-        // S.NO column
-        groupRow.insertCell().outerHTML = `<th class="rounded-tl-xl border-b-0 sno-cell border-r-0">${getString(
-          "sno"
-        )}</th>`;
-        // Description column
-        groupRow.insertCell().outerHTML = `<th class="border-b-0 text-center font-bold text-md text-white description-cell">${getString(
-          "description"
-        )}</th>`;
-
-        const groups = ["Assets", "Liabilities", "Owner's Equity"];
-        groups.forEach((groupName) => {
-          const groupCols = columns.filter((col) => col.group === groupName);
-          if (groupCols.length > 0) {
-            const cell = groupRow.insertCell();
-            cell.colSpan = groupCols.length;
-            cell.className =
-              "text-center font-bold text-md text-primary border-b-0";
-            cell.textContent = groupName;
-            if (groupName === "Liabilities" || groupName === "Owner's Equity") {
-              cell.classList.add("border-l", "border-l-indigo-500");
-            }
-          }
-        });
-
-        // Add the Final Total / Balance Column Header (Single Cell)
-        groupRow.insertCell().outerHTML = `<th class="rounded-tr-xl border-b-0 text-center font-bold text-md text-white border-l border-l-primary" style="min-width: 160px;">EQUATION TOTAL</th>`;
-
-        // 2. Create Detail Header (Account Names)
-        const detailHeader = table.createTHead();
-        detailHeader.classList.add("header-row");
-        const detailRow = detailHeader.insertRow();
-
-        detailRow.insertCell().textContent = ""; // Placeholder for S.NO
-        detailRow.insertCell().textContent = ""; // Placeholder for Description
-
-        columns.forEach((col, index) => {
-          const th = detailRow.insertCell();
-          th.innerHTML = `
-                    <div class="flex items-center justify-center gap-1">
-                        <span class="truncate">${col.name}</span>
-                    </div>
-                `;
-          const isFirstColInGroup =
-            (col.group === "Liabilities" || col.group === "Owner's Equity") &&
-            index > 0 &&
-            columns[index - 1]?.group !== col.group;
-          if (isFirstColInGroup) {
-            th.classList.add("border-l", "border-l-indigo-500");
-          }
-        });
-
-        // UPDATED: Added label for the Equation Total cell in the detail header row
-        detailRow.insertCell().outerHTML = `<th class="rounded-tr-xl border-l border-l-primary text-xs font-semibold">TOTAL STATUS</th>`;
-
-        // Create empty body and footer
-        table.createTBody();
-        table.createTFoot();
-
-        renderTotalRow();
-      }
-
-      /**
-       * Adds a new transaction row to the table body.
-       * @param {Array<string | number>} [initialValues] - Array of initial values (or null for manual).
-       * @param {string} [description='Manual Entry'] - Description of the transaction.
-       * @param {boolean} [skipCounter=false] - If true, skips rowCounter increment (used for re-rendering existing data).
-       */
-      function addRow(
-        initialValues = [],
-        description = "Manual Entry",
-        skipCounter = false
-      ) {
-        const tbody = table.querySelector("tbody");
-        if (!tbody) return;
-
-        if (!skipCounter) {
-          rowCounter++;
-        }
-
-        const newRow = tbody.insertRow();
-        newRow.setAttribute("data-row-id", `row${rowCounter}`);
-        newRow.classList.add("hover:bg-gray-800");
-
-        // S.NO cell (Index 0) - Now includes the delete button
-        const snoCell = newRow.insertCell();
-        snoCell.classList.add(
-          "font-semibold",
-          "text-gray-300",
-          "sno-cell",
-          "relative",
-          "border-r-0"
+      function notify() {
+        const name = prompt(
+          "Enter your name (optional) to receive a notification:"
         );
-        snoCell.innerHTML = `
-                <div class="flex items-center justify-between gap-1">
-                    <span>${skipCounter ? "..." : rowCounter}</span>
-                    <button onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1 rounded-full transition duration-150 leading-none" title="Delete Transaction">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-                            <path fill-rule="evenodd" d="M16.5 4.475C16.5 3.655 15.845 3 15.025 3h-6.05C8.155 3 7.5 3.655 7.5 4.475v.525h9V4.475zM4 6.75A.75.75 0 014.75 6h14.5a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1h-13v1a.75.75 0 01-1.5 0v-1.5zM6 9.75a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM5.25 12.75a.75.75 0 01.75-.75h12a.75.75 0 010 1.5h-12a.75.75 0 01-.75-.75zM4.5 15.75a.75.75 0 01.75-.75h13.5a.75.75 0 010 1.5H5.25a.75.75 0 01-.75-.75zM4 18.75a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H4.75a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-            `;
-
-        // Description cell (Index 1) - Editable
-        const descCell = newRow.insertCell();
-        descCell.classList.add("description-cell", "text-gray-300");
-
-        const descText = description === "Manual Entry" ? "" : description;
-
-        descCell.innerHTML = `
-                <div contenteditable="true" 
-                     oninput="handleInput(this)" 
-                     onblur="handleInput(this)" 
-                     data-placeholder="${getString("placeholder_desc")}"
-                     class="description-content rounded hover:bg-gray-700 transition duration-150 outline-none focus:ring-1 focus:ring-primary">
-                    ${descText}
-                </div>
-            `;
-
-        // Input cells (Index 2 onwards)
-        columns.forEach((col, index) => {
-          const cell = newRow.insertCell();
-          // Check if this column starts a new group for the separator line
-          const isFirstColInGroup =
-            (col.group === "Liabilities" || col.group === "Owner's Equity") &&
-            index > 0 &&
-            columns[index - 1]?.group !== col.group;
-          if (isFirstColInGroup) {
-            cell.classList.add("border-l", "border-l-indigo-500");
-          }
-
-          const input = document.createElement("input");
-          input.type = "text";
-          input.className = "input-cell";
-          input.placeholder = "0";
-          input.setAttribute("data-col-id", col.id);
-          input.setAttribute("oninput", "handleInput(this)");
-
-          const initialValue = parseValue(initialValues[index]);
-          if (initialValue !== 0) {
-            const valueString = Math.abs(initialValue).toLocaleString("en-US", {
-              minimumFractionDigits: 0,
-            });
-            input.value = (initialValue > 0 ? "+" : "-") + valueString;
-          } else {
-            input.value = "";
-          }
-
-          cell.appendChild(input);
-        });
-
-        // Final Total Balance placeholder cell for this row
-        const totalBalanceCell = newRow.insertCell();
-        totalBalanceCell.classList.add(
-          "total-cell",
-          "bg-slate-800",
-          "border-r-0",
-          "border-l",
-          "border-l-primary"
+        if (name === null) return;
+        alert(
+          "Thanks, " +
+            (name || "friend") +
+            "! We will notify you when the page is ready."
         );
-        totalBalanceCell.innerHTML =
-          '<span class="text-xs text-gray-500">...</span>';
-
-        calculateAllTotals();
       }
-
-      function removeRow(buttonElement) {
-        const row = buttonElement.closest("tr");
-        if (row) {
-          if (!window.confirm(getString("confirm_delete_row"))) return;
-
-          const tbody = row.parentNode;
-          tbody.removeChild(row);
-
-          reIndexRows();
-          calculateAllTotals();
-        }
-      }
-
-      function reIndexRows() {
-        const rows = table.querySelectorAll("tbody tr");
-        rowCounter = 0;
-        rows.forEach((row) => {
-          rowCounter++;
-          const snoSpan = row.cells[0]?.querySelector("span");
-          if (snoSpan) {
-            snoSpan.textContent = rowCounter;
-          }
-          row.setAttribute("data-row-id", `row${rowCounter}`);
-        });
-      }
-
-      function deleteAllRows(forceClear = false) {
-        if (!forceClear) {
-          if (!window.confirm(getString("confirm_delete_all"))) return;
-        }
-        const tbody = table.querySelector("tbody");
-        if (tbody) tbody.innerHTML = "";
-        rowCounter = 0;
-        calculateAllTotals();
-      }
-
-      function renderTotalRow() {
-        let tfoot = table.querySelector("tfoot");
-        if (!tfoot) {
-          tfoot = table.createTFoot();
-        }
-        tfoot.innerHTML = "";
-
-        const totalRow = tfoot.insertRow();
-        totalRow.classList.add("border-t-2", "border-primary");
-
-        // Label cell (colspan 2: S.NO, Description)
-        totalRow.insertCell().outerHTML = `<td colspan="2" class="total-cell font-extrabold text-white bg-slate-700 rounded-bl-xl border-r-0 text-left pl-4">${getString(
-          "final_balance"
-        )}</td>`;
-
-        // Total cells for each column
-        columns.forEach((col, index) => {
-          const totalCell = totalRow.insertCell();
-          totalCell.className = "total-cell";
-          const isFirstColInGroup =
-            (col.group === "Liabilities" || col.group === "Owner's Equity") &&
-            index > 0 &&
-            columns[index - 1]?.group !== col.group;
-          if (isFirstColInGroup) {
-            totalCell.classList.add("border-l", "border-l-indigo-500");
-          }
-          totalCell.setAttribute("data-total-id", col.id);
-          totalCell.textContent = "0.00";
-        });
-
-        // Grand Equation Balance cell (Simplified display)
-        totalRow.insertCell().outerHTML = `<td id="equationBalanceTotal" class="total-cell font-extrabold text-lg rounded-br-xl border-l border-l-primary"></td>`;
-      }
-
-      function calculateAllTotals() {
-        let totalAssetSum = 0;
-        let totalLiabilitySum = 0;
-        let totalEquitySum = 0;
-        const tolerance = 0.0001;
-        let equityContributionSum = 0; // L + C + R - E - D
-
-        // 1. Calculate and update Column Totals
-        columns.forEach((col) => {
-          const total = calculateColumnTotal(col.id);
-          const totalCell = document.querySelector(
-            `td[data-total-id="${col.id}"]`
-          );
-          if (totalCell) {
-            totalCell.textContent = total.toLocaleString("en-US", {
-              minimumFractionDigits: 2,
-            });
-          }
-
-          if (col.group === "Assets") {
-            totalAssetSum += total;
-          } else if (col.group === "Liabilities") {
-            totalLiabilitySum += total;
-          }
-
-          // Calculate Equity Component (L + OE)
-          if (col.name === "Owner's Capital" || col.name === "Revenue") {
-            equityContributionSum += total; // Increase
-          } else if (col.name === "Expenses" || col.name === "Withdrawals") {
-            equityContributionSum -= total; // Decrease (contra-equity)
-          }
-        });
-
-        totalEquitySum = totalLiabilitySum + equityContributionSum;
-
-        // 2. Calculate and update Grand Total Equation Balance (A vs L + E)
-        const equationBalance = totalAssetSum - totalEquitySum;
-        const balanceTotalCell = document.getElementById(
-          "equationBalanceTotal"
-        );
-
-        if (balanceTotalCell) {
-          const isBalanced = Math.abs(equationBalance) < tolerance;
-
-          balanceTotalCell.classList.remove(
-            "bg-error",
-            "bg-success",
-            "bg-slate-700"
-          );
-
-          if (isBalanced) {
-            // Show only the total size of the balanced equation
-            const finalTotalDisplay = totalAssetSum.toLocaleString("en-US", {
-              minimumFractionDigits: 2,
-            });
-            balanceTotalCell.innerHTML = `<span class="text-xs font-normal text-gray-300">Total Equation Size:</span> <span class="text-2xl font-extrabold">${finalTotalDisplay}</span>`;
-            balanceTotalCell.classList.add("bg-success", "text-white");
-            balanceTotalCell.title =
-              "Assets = Liabilities + Equity (BALANCED!)";
-          } else {
-            // Show the explicit difference (the balance error)
-            const difference = equationBalance.toLocaleString("en-US", {
-              minimumFractionDigits: 2,
-            });
-            balanceTotalCell.innerHTML = `<span class="text-xs font-normal text-gray-300">A - (L+E) Difference:</span> <span class="text-xl font-extrabold">${difference}</span>`;
-            balanceTotalCell.classList.add("bg-error", "text-white");
-            balanceTotalCell.title =
-              "Assets ≠ Liabilities + Equity (UNBALANCED)";
-          }
-        }
-      }
-
-      const debouncedCalculateTotals = debounce(calculateAllTotals, 100);
-
-      // --- Export Functions ---
-
-      function getExportHeaders() {
-        const headers = [getString("sno"), getString("description")];
-        headers.push(...columns.map((c) => c.name));
-        return headers;
-      }
-
-      function getTableDataForExport() {
-        const data = [];
-        const rows = table.querySelectorAll("tbody tr");
-        rows.forEach((row) => {
-          const rowCells = [];
-          // 1. S.NO
-          rowCells.push(row.cells[0]?.querySelector("span")?.textContent || "");
-          // 2. Description
-          rowCells.push(
-            row.cells[1]
-              ?.querySelector(".description-content")
-              ?.textContent.trim() || ""
-          );
-
-          // 3. Input values
-          row.querySelectorAll(".input-cell").forEach((input) => {
-            rowCells.push(parseValue(input.value));
-          });
-          data.push(rowCells);
-        });
-
-        // Get Footer Data (Total Row)
-        const totalAssetSum =
-          calculateColumnTotal("col0") +
-          calculateColumnTotal("col1") +
-          calculateColumnTotal("col2") +
-          calculateColumnTotal("col3");
-        let totalLiabilityEquitySum = calculateColumnTotal("col4");
-        totalLiabilityEquitySum += calculateColumnTotal("col5"); // Capital
-        totalLiabilityEquitySum += calculateColumnTotal("col6"); // Revenue
-        totalLiabilityEquitySum -= calculateColumnTotal("col7"); // Expenses (Contra)
-        totalLiabilityEquitySum -= calculateColumnTotal("col8"); // Withdrawals (Contra)
-        const equationBalance = totalAssetSum - totalLiabilityEquitySum;
-        const isBalanced = Math.abs(equationBalance) < 0.0001;
-
-        const footerData = [getString("final_balance"), ""];
-        columns.forEach((col) => {
-          const total = calculateColumnTotal(col.id);
-          footerData.push(total);
-        });
-
-        return {
-          body: data,
-          footer: footerData,
-          headers: getExportHeaders(),
-          isBalanced: isBalanced,
-          equationTotal: totalAssetSum,
-          balanceDifference: equationBalance,
-        };
-      }
-
-      function exportToExcel() {
-        const exportData = getTableDataForExport();
-
-        const ws = XLSX.utils.aoa_to_sheet([]);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Accounting Analysis");
-
-        // --- Header Generation for Excel (Two rows of headers) ---
-        const groupMerges = [];
-        const groups = ["Assets", "Liabilities", "Owner's Equity"];
-        let colIndex = 2; // Start after S.NO(0), Description(1)
-
-        groups.forEach((groupName) => {
-          const groupCols = columns.filter((col) => col.group === groupName);
-          if (groupCols.length > 0) {
-            groupMerges.push({
-              s: { r: 0, c: colIndex },
-              e: { r: 0, c: colIndex + groupCols.length - 1 },
-            });
-            const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
-            XLSX.utils.sheet_add_aoa(ws, [[groupName]], { origin: cellRef });
-            colIndex += groupCols.length;
-          }
-        });
-
-        // Add a cell for the Equation Total column header in the first row
-        const totalColIndex = colIndex;
-        groupMerges.push({
-          s: { r: 0, c: totalColIndex },
-          e: { r: 1, c: totalColIndex },
-        });
-        const totalCellRef = XLSX.utils.encode_cell({ r: 0, c: totalColIndex });
-        XLSX.utils.sheet_add_aoa(ws, [["EQUATION TOTAL"]], {
-          origin: totalCellRef,
-        });
-
-        // Merge the S.NO and Description headers across both rows
-        groupMerges.push(
-          { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } }, // S.NO
-          { s: { r: 0, c: 1 }, e: { r: 1, c: 1 } } // Description
-        );
-
-        // Add account names to row 1 (the second row in excel)
-        const accountNamesRow = ["", "", ...columns.map((c) => c.name), ""]; // Empty string for total column
-        XLSX.utils.sheet_add_aoa(ws, [accountNamesRow], { origin: "A2" });
-
-        ws["!merges"] = groupMerges;
-
-        // Add body and footer starting at row 3
-        XLSX.utils.sheet_add_aoa(ws, exportData.body, { origin: "A3" });
-
-        // Add the equation total to the footer row
-        const footerWithTotal = [
-          ...exportData.footer,
-          exportData.equationTotal,
-        ];
-
-        // Add footer
-        XLSX.utils.sheet_add_aoa(ws, [footerWithTotal], {
-          origin: `A${exportData.body.length + 3}`,
-        });
-
-        // Apply number formatting to all data cells
-        for (let R = 2; R < exportData.body.length + 3; ++R) {
-          for (let C = 2; C < totalColIndex + 1; ++C) {
-            const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
-            const cell = ws[cellRef];
-            if (cell && cell.v !== undefined && typeof cell.v === "number") {
-              cell.z = "#,##0.00;[Red]-#,##0.00";
-            }
-          }
-        }
-
-        // Style the Total row (last row added)
-        const totalRowIndex = exportData.body.length + 2;
-        const totalRowStyle = {
-          fill: { fgColor: { rgb: "FF334155" } },
-          font: { bold: true, color: { rgb: "FFFFFFFF" } },
-        }; // slate-700
-        for (let C = 0; C < totalColIndex + 1; ++C) {
-          const cellRef = XLSX.utils.encode_cell({ r: totalRowIndex, c: C });
-          if (!ws[cellRef]) ws[cellRef] = {};
-          if (!ws[cellRef].s) ws[cellRef].s = {};
-          Object.assign(ws[cellRef].s, totalRowStyle);
-        }
-        // Highlight the grand total status cell
-        const totalStatusCellRef = XLSX.utils.encode_cell({
-          r: totalRowIndex,
-          c: totalColIndex,
-        });
-        const totalStatusStyle = {
-          fill: {
-            fgColor: { rgb: exportData.isBalanced ? "FF10B981" : "FFEF4444" },
-          },
-          font: { bold: true, color: { rgb: "FFFFFFFF" } },
-        };
-        if (!ws[totalStatusCellRef]) ws[totalStatusCellRef] = {};
-        if (!ws[totalStatusCellRef].s) ws[totalStatusCellRef].s = {};
-        Object.assign(ws[totalStatusCellRef].s, totalStatusStyle);
-
-        XLSX.writeFile(wb, "Accounting_Analysis.xlsx");
-        showMessage(getString("success_excel"), "success");
-      }
-
-      // --- PDF Export Function (Corrected for Width and Footer Colspan) ---
-      function exportToPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF("l", "pt", "a4"); // Landscape A4
-
-        const exportData = getTableDataForExport();
-
-        const headerNames = exportData.headers;
-        const headersWithTotal = [...headerNames, "TOTAL STATUS"];
-
-        // Format numeric cells
-        const bodyData = exportData.body.map((row) =>
-          row.map((cell, index) => {
-            if (typeof cell === "number" && index >= 2) {
-              return cell.toLocaleString("en-US", { minimumFractionDigits: 2 });
-            }
-            return cell;
-          })
-        );
-
-        // Footer formatting
-        const numericFooterData = exportData.footer
-          .slice(2)
-          .map((cell) =>
-            typeof cell === "number"
-              ? cell.toLocaleString("en-US", { minimumFractionDigits: 2 })
-              : String(cell)
-          );
-
-        const equationTotalDisplay = exportData.equationTotal.toLocaleString(
-          "en-US",
-          {
-            minimumFractionDigits: 2,
-          }
-        );
-
-        const balanceDifferenceDisplay =
-          exportData.balanceDifference.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-          });
-
-        // Footer (final totals)
-        const footRowCells = [
-          {
-            content: "Final Balance",
-            colSpan: 2,
-            styles: {
-              halign: "left",
-              fillColor: [245, 245, 245],
-              textColor: [0, 0, 0],
-            },
-          },
-          ...numericFooterData.map((c) => ({
-            content: c,
-            styles: { halign: "right" },
-          })),
-          {
-            content: equationTotalDisplay,
-            styles: {
-              halign: "right",
-              fontStyle: "bold",
-              fillColor: exportData.isBalanced
-                ? [230, 255, 230]
-                : [255, 235, 235],
-              textColor: [0, 0, 0],
-            },
-          },
-        ];
-
-        // ===== HEADER SECTION =====
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(20);
-        doc.text("Accounting Equation Analysis Report", 40, 40);
-
-        const genTime = new Date().toLocaleString();
-        const statusText = exportData.isBalanced
-          ? `Status: BALANCED`
-          : `Status: UNBALANCED (Difference: ${balanceDifferenceDisplay})`;
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(12);
-        doc.text(`Report Type: Transaction Analysis`, 40, 62);
-        doc.text(`Generated On: ${genTime}`, 40, 78);
-        doc.text(statusText, 40, 94);
-
-        // Separator Line
-        doc.setDrawColor(200, 200, 200);
-        doc.line(40, 105, doc.internal.pageSize.width - 40, 105);
-
-        // ===== MAIN TABLE =====
-        doc.autoTable({
-          head: [headersWithTotal],
-          body: bodyData,
-          foot: [footRowCells],
-          theme: "grid",
-          startY: 120,
-          styles: {
-            fontSize: 9,
-            cellPadding: 3,
-            textColor: [0, 0, 0],
-            lineColor: [190, 190, 190],
-          },
-          headStyles: {
-            fillColor: [245, 245, 245],
-            textColor: [0, 0, 0],
-            fontStyle: "bold",
-            fontSize: 10,
-          },
-          footStyles: {
-            fillColor: [245, 245, 245],
-            textColor: [0, 0, 0],
-            fontStyle: "bold",
-            fontSize: 10,
-          },
-          columnStyles: {
-            0: { cellWidth: 40, halign: "center" },
-            1: { cellWidth: 150 }, // description wider
-            ...Array.from({ length: columns.length }, (_, i) => i + 2).reduce(
-              (acc, index) => {
-                acc[index] = { halign: "right", cellWidth: 50 };
-                return acc;
-              },
-              {}
-            ),
-            [columns.length + 2]: { halign: "right", cellWidth: 70 },
-          },
-          margin: { left: 30, right: 30 }, // full width, minimal side margins
-        });
-
-        // ===== FOOTER SECTION =====
-        const pageWidth = doc.internal.pageSize.width;
-        const pageHeight = doc.internal.pageSize.height;
-        const lastY = doc.lastAutoTable.finalY + 25;
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(12);
-        doc.text("Summary", 40, lastY);
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.text(
-          [
-            `• This report provides an analysis of the accounting equation based on recorded transactions.`,
-            `• The accounting equation is: Assets = Liabilities + Equity.`,
-          ],
-          55,
-          lastY + 16
-        );
-
-        // Footer credit (small)
-        doc.setFont("helvetica", "italic");
-        doc.setFontSize(8);
-        doc.text(
-          "Generated by: Mohammad Ali Nayeem | kazinayeem.site",
-          pageWidth - 40,
-          pageHeight - 20,
-          { align: "right" }
-        );
-
-        // Save PDF
-        doc.save("Accounting_Equation_Report.pdf");
-        showMessage(getString("success_pdf"), "success");
-      }
-
-      // --- AI Integration Logic (Updated for 9 accounts, explicit Withdrawals) ---
-
-      const ACCOUNT_MAP = {
-        Cash: "col0",
-        "A/c Receivable": "col1",
-        Supplies: "col2",
-        Equipment: "col3",
-        "A/c Payable": "col4",
-        "Owner's Capital": "col5",
-        Revenue: "col6",
-        Expenses: "col7",
-        Withdrawals: "col8",
-      };
-
-      function processAIResponse(transactions) {
-        if (!Array.isArray(transactions)) {
-          throw new Error(getString("error_ai_json") + " Expected an array.");
-        }
-
-        deleteAllRows(true);
-
-        transactions.forEach((tx) => {
-          const description = tx.description || "AI Generated Transaction";
-          const values = [];
-
-          columns.forEach((col) => {
-            const aiKey = Object.keys(ACCOUNT_MAP).find(
-              (key) => ACCOUNT_MAP[key] === col.id
-            );
-
-            let value = 0;
-            if (aiKey && tx.hasOwnProperty(aiKey)) {
-              value = parseValue(tx[aiKey]);
-            }
-
-            values.push(value);
-          });
-
-          addRow(values, description);
-        });
-
-        if (transactions.length > 0) {
-          showMessage(getString("success_ai"), "success");
-        } else {
-          showMessage(
-            "AI returned no transactions. Check your prompt.",
-            "error"
-          );
-        }
-      }
-
-      async function callGeminiAPI(userQuery, maxRetries = 5) {
-        loadingIndicator.classList.remove("hidden");
-        btnText.textContent = "Processing...";
-        processAIBtn.disabled = true;
-
-        // UPDATED: Schema reflects the 9 accounts including Withdrawals
-        const responseSchema = {
-          type: "ARRAY",
-          items: {
-            type: "OBJECT",
-            properties: {
-              description: {
-                type: "STRING",
-                description: "A concise description of the transaction.",
-              },
-              Cash: {
-                type: "NUMBER",
-                description: "Change in Cash (e.g., +1000 or -500)",
-              },
-              "A/c Receivable": {
-                type: "NUMBER",
-                description: "Change in Accounts Receivable",
-              },
-              Supplies: { type: "NUMBER", description: "Change in Supplies" },
-              Equipment: { type: "NUMBER", description: "Change in Equipment" },
-              "A/c Payable": {
-                type: "NUMBER",
-                description: "Change in Accounts Payable",
-              },
-              "Owner's Capital": {
-                type: "NUMBER",
-                description: "Change in Owner's Capital (Investment).",
-              },
-              Revenue: {
-                type: "NUMBER",
-                description: "Change in Revenue (Earnings).",
-              },
-              Expenses: {
-                type: "NUMBER",
-                description: "Change in Expenses (Costs incurred).",
-              },
-              Withdrawals: {
-                type: "NUMBER",
-                description: "Change in Withdrawals (Personal use).",
-              },
-            },
-            required: [
-              "description",
-              "Cash",
-              "A/c Receivable",
-              "Supplies",
-              "Equipment",
-              "A/c Payable",
-              "Owner's Capital",
-              "Revenue",
-              "Expenses",
-              "Withdrawals",
-            ],
-          },
-        };
-
-        const systemPrompt = `You are a world-class accounting expert. Your task is to analyze a list of business transactions and provide the corresponding changes to the accounting equation (Assets = Liabilities + Owner's Equity). 
-            
-The accounts you MUST use are: Cash, A/c Receivable, Supplies, Equipment (all Assets); A/c Payable (Liability); Owner's Capital, Revenue, Expenses, and Withdrawals (all Owner's Equity related). 
-            
-For each transaction, determine the amount and the effect (increase: positive number, decrease: negative number) on exactly two or more accounts, ensuring the equation Assets = Liabilities + Owner's Equity remains balanced for that transaction. 
-            
-***CRITICAL EQUITY RULES:*** 1. Use positive numbers for **Owner's Capital** (investment) and **Revenue** (increases Equity).
-2. Use **positive numbers** for **Expenses** (contra-equity, decreases net Equity).
-3. Use **positive numbers** for **Withdrawals** (contra-equity, decreases net Equity).
-            
-Do not include any text outside the JSON array.`;
-
-        const payload = {
-          contents: [{ parts: [{ text: userQuery }] }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: responseSchema,
-          },
-        };
-
-        const apiKey = "AIzaSyCU_3pVcZZOwqBh448m-G7NduL613sQ63M";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-        let result = null;
-        let error = null;
-
-        for (let i = 0; i < maxRetries; i++) {
-          try {
-            const response = await fetch(apiUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-
-            if (!response.ok) {
-              const errorBody = await response.json();
-              throw new Error(
-                `API returned status ${response.status}: ${
-                  errorBody.error?.message || "Unknown API error"
-                }`
-              );
-            }
-
-            const responseJson = await response.json();
-            const jsonText =
-              responseJson.candidates?.[0]?.content?.parts?.[0]?.text;
-
-            if (jsonText) {
-              result = JSON.parse(jsonText);
-              break;
-            } else {
-              throw new Error(getString("error_ai_data"));
-            }
-          } catch (e) {
-            error = e;
-            if (i < maxRetries - 1) {
-              const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
-              await new Promise((resolve) => setTimeout(resolve, delay));
-            }
-          }
-        }
-
-        loadingIndicator.classList.add("hidden");
-        btnText.textContent = "Fill Entries with AI";
-        processAIBtn.disabled = false;
-
-        if (result) {
-          try {
-            processAIResponse(result);
-          } catch (e) {
-            showMessage(getString("error_ai_data") + " " + e.message, "error");
-          }
-        } else {
-          showMessage(getString("error_ai_api") + " " + error.message, "error");
-        }
-      }
-
-      // Make essential functions globally accessible for HTML event handlers
-      window.removeRow = removeRow;
-      window.handleInput = debouncedCalculateTotals;
-      window.calculateAllTotals = calculateAllTotals;
-
-      // --- Event Listeners ---
-      addRowBtn.addEventListener("click", () => addRow([], "Manual Entry"));
-      deleteAllRowsBtn.addEventListener("click", () => deleteAllRows(false));
-      exportExcelBtn.addEventListener("click", exportToExcel);
-      exportPDFBtn.addEventListener("click", exportToPDF);
-
-      processAIBtn.addEventListener("click", () => {
-        const promptValue = aiPrompt.value.trim() || aiPrompt.placeholder;
-        callGeminiAPI(promptValue);
-      });
-
-      // --- Initialization ---
-      document.addEventListener("DOMContentLoaded", () => {
-        renderTableSkeleton();
-      });
     </script>
     <script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+      window.va =
+        window.va ||
+        function () {
+          (window.vaq = window.vaq || []).push(arguments);
+        };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>
